@@ -6,9 +6,9 @@ inThisBuild(
     licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html")),
     developers += Developer("sake92", "Sakib Hadžiavdić", "sakib@sake.ba", url("https://sake.ba")),
     scmInfo := Some(
-      ScmInfo(url("https://github.com/sake92/stone"), "scm:git:git@github.com:sake92/stone.git")
+      ScmInfo(url("https://github.com/sake92/scalajs-router"), "scm:git:git@github.com:sake92/scalajs-router.git")
     ),
-    homepage := Some(url("https://github.com/sake92/stone"))
+    homepage := Some(url("https://github.com/sake92/scalajs-router"))
   )
 )
 
