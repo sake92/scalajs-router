@@ -77,7 +77,7 @@ final class Router private (
 
   private def refresh(): Unit = {
     // remove baseUrl from matching..
-    val newUrl = window.location.pathname.take(baseUrl.length) + window.location.search
+    val newUrl = window.location.pathname.drop(baseUrl.length) + window.location.search
     routesData.foreach { rd =>
       val component = rd.routes.lift(newUrl).getOrElse(rd.notFoundComponent)
       maybeMountElement.get.innerHTML = component.asElement.innerHTML
