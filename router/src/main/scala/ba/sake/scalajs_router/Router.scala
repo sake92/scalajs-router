@@ -21,33 +21,51 @@ object Router {
   )
 
   def apply(): Router =
-    new Router(None, None)
+    new Router()
+
+  def apply(baseUrl: String): Router =
+    new Router(baseUrl = baseUrl)
 
   def apply(mountId: String, routes: Routes, notFoundComponent: Component): Router =
-    new Router(Some(RoutesData(mountId, routes, notFoundComponent)), None)
+    new Router(routesData = Some(RoutesData(mountId, routes, notFoundComponent)))
+
+  def apply(
+      baseUrl: String,
+      mountId: String,
+      routes: Routes,
+      notFoundComponent: Component
+  ): Router =
+    new Router(baseUrl = baseUrl, routesData = Some(RoutesData(mountId, routes, notFoundComponent)))
 
 }
 
 // routesData is optional because you sometimes just need to listen for a route change
 final class Router private (
-    routesData: Option[Router.RoutesData],
-    routeListener: Option[Router.Listener]
+    baseUrl: String = "",
+    routesData: Option[Router.RoutesData] = None,
+    routeListener: Option[Router.Listener] = None
 ) {
 
   private val maybeMountElement = routesData.map(rd => document.getElementById(rd.mountId))
 
-  init()
+  def withBaseUrl(baseUrl: String): Router =
+    new Router(baseUrl, routesData, routeListener)
 
   def withListener(routeListener: Router.Listener): Router =
-    new Router(routesData, Some(routeListener))
+    new Router(baseUrl, routesData, Some(routeListener))
 
   def navigateTo(path: String): Unit = {
-    window.history.pushState(null, null, path) // change URL
+    val newUrl = baseUrl + path
+    window.history.pushState(null, null, newUrl) // change URL
     // trigger whenever URL changes
     window.dispatchEvent(new dom.Event("popstate"))
   }
 
-  private def init(): Unit = {
+  /**
+    * To avoid attaching click listeners twice (when new Router is called),
+    * we let user manually specify when that will happen
+    */
+  def init(): Unit = {
     refresh()
     attachNavListeners()
     window.addEventListener(

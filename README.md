@@ -23,7 +23,7 @@ val routes: Router.Routes = {
   case "/users/1" => UserDetailsComponent(1)
 }
 
-val router = Router("main", routes, NotFoundComponent)
+Router("main", routes, NotFoundComponent).init()
 
 // components
 object HomeComponent extends Component {
@@ -36,11 +36,11 @@ object NotFoundComponent extends Component ..
 ---
 You can attach a listener when a route changes:
 ```scala
-router.withListener {
+Router().withListener {
   case "/active"    => // do something...
   case "/other"     => 
   case whateverElse => 
-}
+}.init()
 ```
 
 ---
