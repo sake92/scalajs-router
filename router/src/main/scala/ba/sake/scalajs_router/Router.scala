@@ -23,9 +23,6 @@ object Router {
   def apply(): Router =
     new Router()
 
-  def apply(baseUrl: String): Router =
-    new Router(baseUrl = baseUrl)
-
   def apply(mountId: String, routes: Routes, notFoundComponent: Component): Router =
     new Router(routesData = Some(RoutesData(mountId, routes, notFoundComponent)))
 
@@ -80,7 +77,9 @@ final class Router private (
     val newUrl = window.location.pathname.drop(baseUrl.length) + window.location.search
     routesData.foreach { rd =>
       val component = rd.routes.lift(newUrl).getOrElse(rd.notFoundComponent)
-      maybeMountElement.get.innerHTML = component.asElement.innerHTML
+      val mountElem = maybeMountElement.get
+      mountElem.innerHTML = ""
+      mountElem.appendChild(component.asElement)
     }
     routeListener.foreach { listener =>
       listener.lift(newUrl)
