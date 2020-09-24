@@ -36,7 +36,6 @@ object Router {
 
 }
 
-// routesData is optional because you sometimes just need to listen for a route change
 final class Router private (
     baseUrl: String = "",
     routesData: Option[Router.RoutesData] = None,
@@ -50,6 +49,13 @@ final class Router private (
 
   def withListener(routeListener: Router.Listener): Router =
     new Router(baseUrl, routesData, Some(routeListener))
+
+  def withRoutesData(mountId: String, routes: Router.Routes, notFoundComponent: Component): Router =
+    new Router(
+      baseUrl,
+      routesData = Some(Router.RoutesData(mountId, routes, notFoundComponent)),
+      routeListener
+    )
 
   def navigateTo(path: String): Unit = {
     val newUrl = baseUrl + path
