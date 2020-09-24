@@ -1,4 +1,4 @@
-# scalajs-router [![Maven Central](https://img.shields.io/maven-central/v/ba.sake/scalajs-router_2.13.svg?style=flat-square&label=Scala+2.13)](https://mvnrepository.com/artifact/ba.sake/scalajs-router) [![Build Status](https://img.shields.io/travis/sake92/scalajs-router/master.svg?logo=travis&style=flat-square)](https://travis-ci.com/sake92/scalajs-router) 
+# scalajs-router [![Maven Central](https://img.shields.io/maven-central/v/ba.sake/scalajs-router_sjs1_2.13.svg?style=flat-square&label=Scala+2.13)](https://mvnrepository.com/artifact/ba.sake/scalajs-router) [![Build Status](https://img.shields.io/travis/sake92/scalajs-router/master.svg?logo=travis&style=flat-square)](https://travis-ci.com/sake92/scalajs-router) 
 
 ScalaJS frontend router.
 
