@@ -11,28 +11,26 @@ trait Component {
 }
 
 object Router {
-  type Routes = PartialFunction[String, Component]
+  type Routes = Function[String, Component]
   type Listener = PartialFunction[String, Unit]
 
   private[Router] case class RoutesData(
       mountId: String,
-      routes: Routes,
-      notFoundComponent: Component
+      routes: Routes
   )
 
   def apply(): Router =
     new Router()
 
-  def apply(mountId: String, routes: Routes, notFoundComponent: Component): Router =
-    new Router(routesData = Some(RoutesData(mountId, routes, notFoundComponent)))
+  def apply(mountId: String, routes: Routes): Router =
+    new Router(routesData = Some(RoutesData(mountId, routes)))
 
   def apply(
       baseUrl: String,
       mountId: String,
-      routes: Routes,
-      notFoundComponent: Component
+      routes: Routes
   ): Router =
-    new Router(baseUrl = baseUrl, routesData = Some(RoutesData(mountId, routes, notFoundComponent)))
+    new Router(baseUrl = baseUrl, routesData = Some(RoutesData(mountId, routes)))
 
 }
 
@@ -50,10 +48,10 @@ final class Router private (
   def withListener(routeListener: Router.Listener): Router =
     new Router(baseUrl, routesData, Some(routeListener))
 
-  def withRoutesData(mountId: String, routes: Router.Routes, notFoundComponent: Component): Router =
+  def withRoutesData(mountId: String, routes: Router.Routes): Router =
     new Router(
       baseUrl,
-      routesData = Some(Router.RoutesData(mountId, routes, notFoundComponent)),
+      routesData = Some(Router.RoutesData(mountId, routes)),
       routeListener
     )
 
@@ -65,8 +63,8 @@ final class Router private (
   }
 
   /**
-    * To avoid attaching click listeners twice (when new Router is called),
-    * we let user manually specify when that will happen
+    * To avoid attaching click listeners twice (when Router is instantiated),
+    * we let user manually specify when that should happen
     */
   def init(): Unit = {
     refresh()
@@ -82,7 +80,7 @@ final class Router private (
     // remove baseUrl from matching..
     val newUrl = window.location.pathname.drop(baseUrl.length) + window.location.search
     routesData.foreach { rd =>
-      val component = rd.routes.lift(newUrl).getOrElse(rd.notFoundComponent)
+      val component = rd.routes(newUrl)
       val mountElem = maybeMountElement.get
       mountElem.innerHTML = ""
       mountElem.appendChild(component.asElement)
@@ -92,6 +90,8 @@ final class Router private (
     }
   }
 
+  // this is for static elements, e.g. links in navbar
+  // dynamic ones can use navigateTo(..)
   private def attachNavListeners(): Unit = {
     val routeLinks = document.body.querySelectorAll("[data-navigate]")
     for (i <- 0 until routeLinks.length) {
