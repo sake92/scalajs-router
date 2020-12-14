@@ -19,11 +19,12 @@ Create element where router will show your dynamic content:
 Then specify your routes and bind the router:
 ```scala
 val routes: Router.Routes = {
-  case "/home"    => HomeComponent
-  case "/users/1" => UserDetailsComponent(1)
+  case "/home"        => HomeComponent
+  case s"/users/$id"  => UserDetailsComponent(id.toLong)
+  case _              => NotFoundComponent
 }
 
-Router("main", routes, NotFoundComponent).init()
+Router("main", routes).init()
 
 // components
 object HomeComponent extends Component {
